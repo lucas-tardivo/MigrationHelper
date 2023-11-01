@@ -1,4 +1,8 @@
-﻿$ProjectPath = $PWD;
+﻿param(
+	[switch]$clearCache
+)
+
+$ProjectPath = $PWD;
 $ProjectName = Split-Path -Path $ProjectPath -Leaf
 $Directory = Join-Path $env:APPDATA "MigrationHelper"
 $JsonFilePath = "$Directory\$ProjectName.json"
@@ -27,7 +31,7 @@ if (!(Test-Path -Path $Directory -PathType Container)) {
     }
 }
 
-if ([string]::IsNullOrEmpty($Config.Provider)) {
+if ([string]::IsNullOrEmpty($Config.Provider) -or $clearCache) {
     $provider = Read-Host "Migration Provider (Example: MySql or Sqlite)"
     $Config.Provider = $provider
 }
