@@ -52,11 +52,7 @@ $ConfigJson = $Config | ConvertTo-Json
 $ConfigJson | Set-Content -Path $JsonFilePath
 
 $MigrationName = Read-Host "Migration name"
-Write-Debug "(Contexts)"
-Write-Debug "P = PlayerContext"
-Write-Debug "G = GameContext"
-Write-Debug "L = LoggingContext"
-$ContextStr = Read-Host "Context"
+$ContextStr = Read-Host "Context (G = GameContext, P = PlayerContext, L = LoggingContext)"
 
 switch ($ContextStr.ToLower()) {
     p {
@@ -75,18 +71,20 @@ switch ($ContextStr.ToLower()) {
 
 $Context = $Config.Provider + $ContextRootName + "Context"
 
-$CommandString = " ef migrations add $MigrationName --context $Context --namespace Intersect.Server.Migrations." + $Config.Provider + ".$ContextRootName --output-dir Migrations/" + $Config.Provider + "/$ContextRootName/ -- --databaseType " + $Config.Provider
+$CommandString = "migrations add $MigrationName --context $Context --namespace Intersect.Server.Migrations." + $Config.Provider + ".$ContextRootName --output-dir Migrations/" + $Config.Provider + "/$ContextRootName/" 
+$Namespace = "Intersect.Server.Migrations." + $Config.Provider
+$OutputDir = "Migrations/" + $Config.Provider + "/$ContextRootName/"
 
 if ($Config.Provider.ToLower() -eq "mysql") {
-    $CommandString = $CommandString + " --connectionString Username=" + $Config.User + ";Password=" + $Config.Password + ";Database=$Database"
+    $ConnectionString = "Username=" + $Config.User + ";Password=" + $Config.Password + ";Database=$Database"
+    cd Join-Path $PWD "Intersect.Server"
+    cd $ServerPath
+    dotnet-ef migrations add $MigrationName --context $Context --namespace $Namespace --output-dir $OutputDir --connectionString $ConnectionString -- --databaseType $Config.Provider
+}else{
+    $StartupProject = "../Intersect.Server/"
+    $ServerPath = Join-Path $PWD "Intersect.Server.Core"
+    cd $ServerPath
+    dotnet-ef migrations add $MigrationName --context $Context --namespace $Namespace --output-dir $OutputDir --startup-project $StartupProject -- --databaseType $Config.Provider
 }
 
-$ServerPath = Join-Path $PWD "Intersect.Server"
-
-cd $ServerPath
-
-try {
-    Invoke-Item "dotnet run $CommandString"
-}catch {
-    cd $ProjectPath
-}
+cd $ProjectPath
