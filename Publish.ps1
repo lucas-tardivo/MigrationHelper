@@ -2,6 +2,8 @@
 	
 )
 
+// Script for publishing projects into a zip folder
+
 $ProjectPath = $PWD;
 $ProjectName = Split-Path -Path $ProjectPath -Leaf
 $ClientPath = "$PWD\Intersect.Client\bin\Release\net7.0\win-x64\publish\*"
@@ -29,10 +31,17 @@ if (-not (Test-Path -Path $OutputPath)) {
     New-Item -Path $OutputPath -ItemType Directory
 }
 
-Compress-Archive -Path $ClientPath -DestinationPath "$OutputPath\Client.zip"
-Compress-Archive -Path $EditorPath -DestinationPath "$OutputPath\Editor.zip"
-Compress-Archive -Path $ServerPath -DestinationPath "$OutputPath\Server.zip"
-Compress-Archive -Path "$OutputPath\*" -DestinationPath "$OutputPath.zip"
+Write-Host "Zipping client..."
+Compress-Archive -Path $ClientPath -DestinationPath "$OutputPath\Client.zip" > $null
+
+Write-Host "Zipping editor..."
+Compress-Archive -Path $EditorPath -DestinationPath "$OutputPath\Editor.zip" > $null
+
+Write-Host "Zipping server..."
+Compress-Archive -Path $ServerPath -DestinationPath "$OutputPath\Server.zip" > $null
+
+Write-Host "Zipping output to an unique file..."
+Compress-Archive -Path "$OutputPath\*" -Force -DestinationPath "$OutputPath.zip" > $null
 
 Remove-Item -Path $OutputPath -Recurse
 
