@@ -2,7 +2,7 @@
 	
 )
 
-// Script for publishing projects into a zip folder
+# Script for publishing projects into a zip folder
 
 $ProjectPath = $PWD;
 $ProjectName = Split-Path -Path $ProjectPath -Leaf
