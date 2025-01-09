@@ -6,9 +6,9 @@
 
 $ProjectPath = $PWD;
 $ProjectName = Split-Path -Path $ProjectPath -Leaf
-$ClientPath = "$PWD\Intersect.Client\bin\Release\net7.0\win-x64\publish\*"
-$EditorPath = "$PWD\Intersect.Editor\bin\Release\net7.0-windows\win-x64\publish\*"
-$ServerPath = "$PWD\Intersect.Server\bin\Release\net7.0\win-x64\publish\*"
+$ClientPath = "$PWD\Intersect.Client\bin\Release\net*\win-x64\publish\*"
+$EditorPath = "$PWD\Intersect.Editor\bin\Release\net*\win-x64\publish\*"
+$ServerPath = "$PWD\Intersect.Server\bin\Release\net*\win-x64\publish\*"
 $desktopPath = [System.Environment]::GetFolderPath('Desktop')
 $date = (Get-Date).ToString("dd-MM-yyyy")
 $OutputPath = "$desktopPath\$ProjectName $date"
