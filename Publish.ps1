@@ -1,14 +1,20 @@
 ﻿param(
-	
+	[bool]$linux
 )
 
 # Script for publishing projects into a zip folder
 
+if ($linux) {
+    $architecture = "linux-x64"
+} else {
+    $architecture = "win-x64"
+}
+
 $ProjectPath = $PWD;
 $ProjectName = Split-Path -Path $ProjectPath -Leaf
-$ClientPath = "$PWD\Intersect.Client\bin\Release\net*\win-x64\publish\*"
-$EditorPath = "$PWD\Intersect.Editor\bin\Release\net*\win-x64\publish\*"
-$ServerPath = "$PWD\Intersect.Server\bin\Release\net*\win-x64\publish\*"
+$ClientPath = "$PWD\Intersect.Client\bin\Release\net*\$architecture\publish\*"
+$EditorPath = "$PWD\Intersect.Editor\bin\Release\net*\$architecture\publish\*"
+$ServerPath = "$PWD\Intersect.Server\bin\Release\net*\$architecture\publish\*"
 $desktopPath = [System.Environment]::GetFolderPath('Desktop')
 $date = (Get-Date).ToString("dd-MM-yyyy")
 $OutputPath = "$desktopPath\$ProjectName $date"
@@ -21,7 +27,7 @@ Remove-Item -Path "$ServerPath\*" -Recurse -Force
 
 Write-Host "Publishing..."
 
-dotnet publish -p:Configuration=Release -p:PackageVersion=0.8.0-beta -p:Version=0.8.0 -r win-x64 > $null
+dotnet publish -p:Configuration=Release -p:PackageVersion=0.8.0-beta -p:Version=0.8.0 -r $architecture > $null
 
 Start-Sleep -Seconds 5
 
